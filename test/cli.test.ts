@@ -1,5 +1,9 @@
+import { mkdtempSync, rmSync, symlinkSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { formatPorts, parseArgs } from '../src/cli.js';
+import { formatPorts, isDirectExecution, parseArgs } from '../src/cli.js';
 
 describe('cli parsing', () => {
   it('parses numeric and list options', () => {
@@ -30,6 +34,21 @@ describe('cli parsing', () => {
 
   it('rejects unknown options', () => {
     expect(() => parseArgs(['--bad'])).toThrow(/Unknown option/);
+  });
+});
+
+describe('cli direct execution detection', () => {
+  it('recognizes npm-style symlinked bin paths', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'safe-port-'));
+    const cliPath = resolve('src/cli.ts');
+    const symlinkPath = join(tempDir, 'safe-port');
+
+    try {
+      symlinkSync(cliPath, symlinkPath);
+      expect(isDirectExecution(symlinkPath, pathToFileURL(cliPath).href)).toBe(true);
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
   });
 });
 

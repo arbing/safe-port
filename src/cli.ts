@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { realpathSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { pickPorts, PortError, type OutputFormat, type PickPortOptions } from './index.js';
 
 interface CliOptions extends PickPortOptions {
@@ -111,6 +113,14 @@ export function formatPorts(ports: number[], format: OutputFormat): string {
   return ports.join('\n');
 }
 
+export function isDirectExecution(scriptPath = process.argv[1], moduleUrl = import.meta.url): boolean {
+  if (!scriptPath) {
+    return false;
+  }
+
+  return realpathSync(fileURLToPath(moduleUrl)) === realpathSync(scriptPath);
+}
+
 function parseNumberValue(flag: string, value: string | undefined): number {
   const raw = parseStringValue(flag, value);
   const parsed = Number(raw);
@@ -150,6 +160,6 @@ function parseFormat(value: string): OutputFormat {
   throw new PortError('The output format must be plain, json, or env.', 1);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isDirectExecution()) {
   process.exitCode = await run();
 }

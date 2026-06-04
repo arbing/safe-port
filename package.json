@@ -1,6 +1,6 @@
 {
   "name": "safe-port",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Pick a safe available port for Docker and local development.",
   "type": "module",
   "license": "MIT",
