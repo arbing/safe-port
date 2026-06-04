@@ -1,0 +1,50 @@
+{
+  "name": "safe-port",
+  "version": "0.1.0",
+  "description": "Pick a safe available port for Docker and local development.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Arbing",
+  "homepage": "https://arbing.github.io/safe-port/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arbing/safe-port.git"
+  },
+  "bugs": {
+    "url": "https://github.com/arbing/safe-port/issues"
+  },
+  "keywords": [
+    "port",
+    "cli",
+    "docker",
+    "available-port",
+    "nodejs"
+  ],
+  "bin": {
+    "safe-port": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit -p tsconfig.json",
+    "prepublishOnly": "npm run lint && npm test && npm run build",
+    "release:patch": "npm version patch && npm publish --access public",
+    "release:minor": "npm version minor && npm publish --access public",
+    "release:major": "npm version major && npm publish --access public"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.0"
+  }
+}
